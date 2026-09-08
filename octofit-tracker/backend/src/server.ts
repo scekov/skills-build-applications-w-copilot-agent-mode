@@ -1,5 +1,6 @@
 import express from 'express';
 import { apiBaseUrl } from './config/api.js';
+import { connectDatabase } from './config/database.js';
 import activitiesRouter from './routes/activities.js';
 import leaderboardRouter from './routes/leaderboard.js';
 import teamsRouter from './routes/teams.js';
@@ -21,6 +22,14 @@ app.use('/api/activities', activitiesRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/workouts', workoutsRouter);
 
-app.listen(port, () => {
-  console.log(`OctoFit API listening on port ${port}`);
+async function startServer(): Promise<void> {
+  await connectDatabase();
+  app.listen(port, () => {
+    console.log(`OctoFit API listening on port ${port}`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error('Unable to start OctoFit API:', error);
+  process.exit(1);
 });

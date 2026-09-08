@@ -1,9 +1,14 @@
 import { Router } from 'express';
+import { Workout } from '../models/workout.js';
 
 const workoutsRouter = Router();
 
-workoutsRouter.get('/', (_request, response) => {
-  response.json([]);
+workoutsRouter.get('/', async (_request, response, next) => {
+  try {
+    response.json(await Workout.find().sort({ title: 1 }).lean());
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default workoutsRouter;
